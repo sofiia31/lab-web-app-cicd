@@ -9,6 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "aws-cdk-lib": "^2.84.0",
+    "constructs": "^10.2.52"
   }
 }
