@@ -4,7 +4,7 @@ FROM node:14
 WORKDIR /app
 
 # Копіюємо код додатку до контейнера
-COPY ./app .
+COPY ./src .
 
 # Виконуємо команду для запуску додатку
 CMD [ "node", "app.js" ]
