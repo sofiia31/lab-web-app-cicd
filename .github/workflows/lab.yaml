@@ -1,0 +1,51 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  oneBigJob:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Bootstrap CDK Stack
+        run: npx cdk bootstrap ${{ secrets.AWS_ACCOUNT_ID }}/ap-northeast-1
+
+      - name: Build Docker image
+        run: docker build -t lab-web-app .
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Deploy ECR
+        run: npx cdk deploy --app 'npx ts-node cdk/ecr.ts' --require-approval never
+
+
+      - name: Get ECR login credentials
+        run: aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com
+
+      - name: Tag image in ECR
+        run: docker tag lab-web-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com/lab-web-app:latest
+
+      - name: Push image to ECR
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com/lab-web-app:latest
+
+      - name: Deploy ECS
+        run: npx cdk deploy --app 'npx ts-node cdk/ecs.ts' --require-approval never
