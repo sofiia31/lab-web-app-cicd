@@ -1,16 +1,12 @@
+const http = require('http');
 
-const express = require('express');
-const dotenv = require('dotenv');
+const port = Number(process.env.APP_PORT || 80);
 
-dotenv.config();
-
-const app = express();
-const port = process.env.APP_PORT || 80;
-
-app.get('/', (req, res) => {
-  res.send('Hello, World1!');
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello there, now is ' + new Date().toISOString());
+  console.log('invocation.')
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+server.listen(port, () => console.log(`Server running at *:${port}/`));
