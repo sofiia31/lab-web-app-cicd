@@ -1,5 +1,5 @@
 const http = require('http');
-const pool = require('../db');
+const pool = require('./db');
 
 const port = Number(process.env.APP_PORT || 80);
 
