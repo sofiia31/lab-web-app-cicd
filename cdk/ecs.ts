@@ -21,7 +21,7 @@ export class LabEcsStack extends cdk.Stack {
       },
     });
 
-    const vpc = new ec2.Vpc(this, 'LabVpc', { maxAzs: 1, natGateways: 0 });
+    const vpc = new ec2.Vpc(this, 'LabVpc', { maxAzs: 3, natGateways: 0 });
 
     const repository = ecr.Repository.fromRepositoryName(this, 'LabECRRepository', appName);
 
