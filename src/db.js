@@ -6,6 +6,9 @@ const pool = new Pool({
   database: 'ship-db',
   password: 'Adm007Adm00',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 module.exports = pool;
